@@ -147,17 +147,17 @@ A aplicação possui os seguintes requisitos funcionais e regras de negócio obs
 
 ## 6. Rotas da API
 
-| Método | Caminho          | Descrição                                               | Requer autenticação                     |
-| ------ | ---------------- | ------------------------------------------------------- | --------------------------------------- |
-| POST   | `/orgs`          | Cadastro de uma organização                             | Não                                     |
-| GET    | `/orgs`          | Listagem de organizações com paginação                  | Não                                     |
-| GET    | `/orgs/:orgId`   | Busca uma organização por ID                            | Não                                     |
-| PATCH  | `/orgs`          | Atualiza dados da organização autenticada               | Sim                                     |
-| POST   | `/sessions`      | Autenticação da organização e retorno de token          | Não                                     |
-| PATCH  | `/token/refresh` | Gera novo token usando o cookie de refresh              | Sim (via Authorization: Bearer <token>) |
-| POST   | `/pets`          | Cadastro de um pet (multipart/form-data com imagens)    | Sim                                     |
-| GET    | `/pets`          | Lista pets com filtros por cidade e outras propriedades | Não                                     |
-| GET    | `/pets/:id`      | Busca um pet por ID                                     | Não                                     |
+| Método | Caminho          | Descrição                                               | Requer autenticação                   |
+| ------ | ---------------- | ------------------------------------------------------- | ------------------------------------- |
+| POST   | `/orgs`          | Cadastro de uma organização                             | Não                                   |
+| GET    | `/orgs`          | Listagem de organizações com paginação                  | Não                                   |
+| GET    | `/orgs/:orgId`   | Busca uma organização por ID                            | Não                                   |
+| PATCH  | `/orgs`          | Atualiza dados da organização autenticada               | Sim                                   |
+| POST   | `/sessions`      | Autenticação da organização e retorno de token          | Não                                   |
+| PATCH  | `/token/refresh` | Gera novo token usando o cookie de refresh              | Sim (cookie `refreshToken`)           |
+| POST   | `/pets`          | Cadastro de um pet (multipart/form-data com imagens)    | Sim (`Authorization: Bearer <token>`) |
+| GET    | `/pets`          | Lista pets com filtros por cidade e outras propriedades | Não                                   |
+| GET    | `/pets/:id`      | Busca um pet por ID                                     | Não                                   |
 
 Detalhes importantes:
 
