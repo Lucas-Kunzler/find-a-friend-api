@@ -24,6 +24,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/find_a_friend_test
+      JWT_SECRET: test-secret
 
     steps:
       - name: Checkout
