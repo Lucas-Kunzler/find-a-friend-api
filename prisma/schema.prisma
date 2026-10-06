@@ -1,0 +1,141 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PetType {
+  DOG
+  CAT
+}
+
+enum PetAge {
+  PUPPY
+  ADULT
+  SENIOR
+}
+
+enum PetSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum PetIndependence {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum PetEnvironment {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+model PetImage {
+  id  String @id @default(uuid())
+  url String
+
+  created_at DateTime @default(now())
+
+  petId String
+  pet   Pet    @relation(fields: [petId], references: [id])
+
+  @@index([petId])
+  @@map("pet_images")
+}
+
+model PetRequirement {
+  id          String @id @default(uuid())
+  description String
+
+  created_at DateTime @default(now())
+
+  pet   Pet    @relation(fields: [petId], references: [id])
+  petId String
+
+  @@index([petId])
+  @@map("pet_requirements")
+}
+
+model Pet {
+  id           String          @id @default(uuid())
+  name         String
+  about        String
+  type         PetType
+  age          PetAge
+  energy       Int
+  size         PetSize
+  independence PetIndependence
+  environment  PetEnvironment
+
+  images       PetImage[]
+  requirements PetRequirement[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  org   Org    @relation(fields: [orgId], references: [id])
+  orgId String
+
+  @@index([orgId])
+  @@map("pets")
+}
+
+model Org {
+  id            String @id @default(uuid())
+  name          String
+  email         String @unique
+  cep           String
+  address       String
+  city          String
+  state         State
+  whatsapp      String
+  password_hash String
+
+  pets Pet[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("orgs")
+}
+
+enum State {
+  AC
+  AL
+  AP
+  AM
+  BA
+  CE
+  DF
+  ES
+  GO
+  MA
+  MT
+  MS
+  MG
+  PA
+  PB
+  PR
+  PE
+  PI
+  RJ
+  RN
+  RS
+  RO
+  RR
+  SC
+  SP
+  SE
+  TO
+}
