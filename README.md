@@ -1,5 +1,7 @@
 # Find a Friend API
 
+[![Tests](https://github.com/Lucas-Kunzler/find-a-friend-api/actions/workflows/main.yml/badge.svg)](https://github.com/Lucas-Kunzler/find-a-friend-api/actions/workflows/main.yml)
+
 API para gestão de ONGs e adoção de pets. O projeto permite cadastrar organizações, autenticar organizações, registrar pets disponíveis para adoção e consultar pets por cidade e filtros de características.
 
 ## 1. Tecnologias utilizadas
