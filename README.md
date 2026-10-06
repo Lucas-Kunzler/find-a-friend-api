@@ -28,7 +28,7 @@ API para gestão de ONGs e adoção de pets. O projeto permite cadastrar organiz
 ### 3.1. Clonar o repositório
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/Lucas-Kunzler/find-a-friend-api.git
 cd find-a-friend-api
 ```
 
