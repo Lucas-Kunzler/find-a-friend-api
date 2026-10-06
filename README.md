@@ -21,7 +21,7 @@ API para gestão de ONGs e adoção de pets. O projeto permite cadastrar organiz
 - Git
 - Docker e Docker Compose
 - npm
-- Node.js: v24.18.0
+- Node.js 20.19+, 22.12+ ou 24+ (recomendado: 24 LTS)
 
 ## 3. Passo a passo para rodar localmente
 
@@ -143,22 +143,21 @@ A aplicação possui os seguintes requisitos funcionais e regras de negócio obs
 - O upload de imagens do pet usa multipart e aceita apenas JPEG, PNG e WEBP.
 - Máximo de 10 imagens por pet.
 - Tamanho máximo por imagem: 5 MB.
-- O contato com o interessado em adoção é feito diretamente com a organização por WhatsApp.
-- A cidade é obrigatória para listar pets.
+- O contato com o interessado em adoção é feito com a organização por WhatsApp.
 
 ## 6. Rotas da API
 
-| Método | Caminho          | Descrição                                               | Requer autenticação |
-| ------ | ---------------- | ------------------------------------------------------- | ------------------- |
-| POST   | `/orgs`          | Cadastro de uma organização                             | Não                 |
-| GET    | `/orgs`          | Listagem de organizações com paginação                  | Não                 |
-| GET    | `/orgs/:orgId`   | Busca uma organização por ID                            | Não                 |
-| PATCH  | `/orgs`          | Atualiza dados da organização autenticada               | Sim                 |
-| POST   | `/sessions`      | Autenticação da organização e retorno de token          | Não                 |
-| PATCH  | `/token/refresh` | Gera novo token usando o cookie de refresh              | Sim (via cookie)    |
-| POST   | `/pets`          | Cadastro de um pet (multipart/form-data com imagens)    | Sim                 |
-| GET    | `/pets`          | Lista pets com filtros por cidade e outras propriedades | Não                 |
-| GET    | `/pets/:id`      | Busca um pet por ID                                     | Não                 |
+| Método | Caminho          | Descrição                                               | Requer autenticação                     |
+| ------ | ---------------- | ------------------------------------------------------- | --------------------------------------- |
+| POST   | `/orgs`          | Cadastro de uma organização                             | Não                                     |
+| GET    | `/orgs`          | Listagem de organizações com paginação                  | Não                                     |
+| GET    | `/orgs/:orgId`   | Busca uma organização por ID                            | Não                                     |
+| PATCH  | `/orgs`          | Atualiza dados da organização autenticada               | Sim                                     |
+| POST   | `/sessions`      | Autenticação da organização e retorno de token          | Não                                     |
+| PATCH  | `/token/refresh` | Gera novo token usando o cookie de refresh              | Sim (via Authorization: Bearer <token>) |
+| POST   | `/pets`          | Cadastro de um pet (multipart/form-data com imagens)    | Sim                                     |
+| GET    | `/pets`          | Lista pets com filtros por cidade e outras propriedades | Não                                     |
+| GET    | `/pets/:id`      | Busca um pet por ID                                     | Não                                     |
 
 Detalhes importantes:
 
@@ -166,39 +165,11 @@ Detalhes importantes:
 - A rota de cadastro de pets usa upload multipart e chama o middleware de verificação antes do parsing do formulário.
 - A página de listagem de orgs usa query `?page=1`.
 
-## 7. Estrutura de pastas resumida
+## 7. Decisões de arquitetura
 
-```text
-.
-├── prisma/
-│   ├── schema.prisma
-│   ├── migrations/
-│   └── vitest-environment-prisma/
-├── src/
-│   ├── app.ts
-│   ├── server.ts
-│   ├── env/
-│   ├── generated/
-│   ├── http/
-│   │   ├── controllers/
-│   │   ├── middlewares/
-│   │   └── routes/
-│   ├── repositories/
-│   ├── storage/
-│   ├── use-cases/
-│   └── utils/
-├── .env.example
-├── docker-compose.yml
-├── package.json
-├── prisma.config.ts
-├── tsconfig.json
-├── vitest.config.ts
-├── README.md
-```
-
-## 8. Decisões de arquitetura
-
-- O projeto usa Prisma com PostgreSQL e exige um banco rodando antes de executar migrations e a API.
-- O banco local é provisionado pelo Docker Compose com as credenciais explícitas em [docker-compose.yml](docker-compose.yml).
-- A aplicação está organizada em camadas: controllers, middlewares, use-cases, repositories e storage.
-- O projeto já possui testes de unidade e E2E configurados no Vitest.
+- **Casos de uso:** cada regra de negócio fica isolada em uma classe própria (`RegisterOrgUseCase`, `ListPetsUseCase`...), sem dependência de HTTP ou de banco.
+- **Padrão Repository:** os casos de uso dependem de interfaces (`OrgsRepository`, `PetsRepository`), com implementações em Prisma (produção) e em memória (testes unitários).
+- **Factories:** a montagem das dependências fica em `use-cases/factories`, deixando os controllers enxutos.
+- **Storage abstrato:** o upload de imagens passa por uma interface (`storage.ts`), o que permite trocar a implementação (ex: local, S3) sem mexer nos casos de uso.
+- **Tratamento de erros centralizado:** erros de negócio e de validação (Zod) são convertidos em respostas HTTP em um único `setErrorHandler`.
+- **Testes:** unitários com repositórios in-memory e E2E com Supertest em banco isolado via ambiente customizado do Vitest.
