@@ -2,6 +2,22 @@
 
 [![Tests](https://github.com/Lucas-Kunzler/find-a-friend-api/actions/workflows/main.yml/badge.svg)](https://github.com/Lucas-Kunzler/find-a-friend-api/actions/workflows/main.yml)
 
+## Demo online
+
+A API está publicada no Render: https://find-a-friend-api-qgk8.onrender.com
+
+> Observação: por estar no plano gratuito, o serviço "dorme" após um período sem acessos e a primeira requisição pode levar cerca de 1 minuto. Além disso, as imagens enviadas ficam em disco local e são apagadas a cada novo deploy.
+
+Exemplos de requisição:
+
+```bash
+# Listar organizações
+curl https://find-a-friend-api-qgk8.onrender.com/orgs
+
+# Listar pets de uma cidade (a cidade é obrigatória)
+curl "https://find-a-friend-api-qgk8.onrender.com/pets?city=Porto%20Alegre"
+```
+
 API para gestão de ONGs e adoção de pets. O projeto permite cadastrar organizações, autenticar organizações, registrar pets disponíveis para adoção e consultar pets por cidade e filtros de características.
 
 ## 1. Tecnologias utilizadas
