@@ -2,23 +2,65 @@
 
 [![Tests](https://github.com/Lucas-Kunzler/find-a-friend-api/actions/workflows/main.yml/badge.svg)](https://github.com/Lucas-Kunzler/find-a-friend-api/actions/workflows/main.yml)
 
+API para gestão de ONGs e adoção de pets. O projeto permite cadastrar organizações, autenticar organizações, registrar pets disponíveis para adoção e consultar pets por cidade e filtros de características.
+
 ## Demo online
 
 A API está publicada no Render: https://find-a-friend-api-qgk8.onrender.com
 
 > Observação: por estar no plano gratuito, o serviço "dorme" após um período sem acessos e a primeira requisição pode levar cerca de 1 minuto. Além disso, as imagens enviadas ficam em disco local e são apagadas a cada novo deploy.
 
-Exemplos de requisição:
+### Exemplo de uso
+
+**1. Cadastrar uma organização**
 
 ```bash
-# Listar organizações
-curl https://find-a-friend-api-qgk8.onrender.com/orgs
-
-# Listar pets de uma cidade (a cidade é obrigatória)
-curl "https://find-a-friend-api-qgk8.onrender.com/pets?city=Porto%20Alegre"
+curl -X POST https://find-a-friend-api-qgk8.onrender.com/orgs \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "ONG Amigo Fiel",
+    "email": "contato@amigofiel.org",
+    "cep": "93900-000",
+    "address": "Rua das Flores, 123",
+    "city": "Ivoti",
+    "state": "RS",
+    "whatsapp": "51999999999",
+    "password": "123456"
+  }'
 ```
 
-API para gestão de ONGs e adoção de pets. O projeto permite cadastrar organizações, autenticar organizações, registrar pets disponíveis para adoção e consultar pets por cidade e filtros de características.
+**2. Autenticar e guardar o token**
+
+```bash
+TOKEN=$(curl -s -X POST https://find-a-friend-api-qgk8.onrender.com/sessions \
+  -H "Content-Type: application/json" \
+  -d '{"email":"contato@amigofiel.org","password":"123456"}' | jq -r .token)
+```
+
+**3. Cadastrar um pet** (multipart/form-data, com pelo menos uma imagem)
+
+```bash
+curl -X POST https://find-a-friend-api-qgk8.onrender.com/pets \
+  -H "Authorization: Bearer $TOKEN" \
+  -F "name=Rex" \
+  -F "about=Um cachorro muito amigável" \
+  -F "type=DOG" \
+  -F "age=ADULT" \
+  -F "energy=5" \
+  -F "size=LARGE" \
+  -F "independence=HIGH" \
+  -F "environment=LARGE" \
+  -F "requirements=Ter espaço amplo" \
+  -F "requirements=Ter disponibilidade para passeios" \
+  -F "images=@rex-1.jpg;type=image/jpeg" \
+  -F "images=@rex-2.jpg;type=image/jpeg"
+```
+
+**4. Buscar pets por cidade e filtros**
+
+```bash
+curl "https://find-a-friend-api-qgk8.onrender.com/pets?city=Ivoti&type=DOG&size=LARGE"
+```
 
 ## 1. Tecnologias utilizadas
 
