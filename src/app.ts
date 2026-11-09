@@ -7,8 +7,11 @@ import cookie from "@fastify/cookie";
 import { petsRoutes } from "./http/controllers/pets/routes.js";
 import fastifyMultipart from "@fastify/multipart";
 import { ResourceNotFoundError } from "./use-cases/errors/resource-not-found-error.js";
+import { rootRoutes } from "./http/routes/root.js";
 
 export const app = fastify();
+
+app.register(rootRoutes);
 
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
