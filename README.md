@@ -8,18 +8,34 @@ API para gestão de ONGs e adoção de pets. O projeto permite cadastrar organiz
 
 A API está publicada no Render: https://find-a-friend-api-qgk8.onrender.com
 
-> Observação: por estar no plano gratuito, o serviço "dorme" após um período sem acessos e a primeira requisição pode levar cerca de 1 minuto. Além disso, as imagens enviadas ficam em disco local e são apagadas a cada novo deploy.
+> Observação: por estar no plano gratuito, o serviço "dorme" após um período sem acessos e a primeira requisição pode levar cerca de 1 minuto. As imagens enviadas por upload ficam em disco local e são apagadas a cada novo deploy.
 
-### Exemplo de uso
+O banco da demo já vem populado com uma ONG e alguns pets, então a busca pode ser testada direto, sem cadastro nem login.
 
-**1. Cadastrar uma organização**
+### Buscar pets (não precisa de login)
+
+```bash
+curl "https://find-a-friend-api-qgk8.onrender.com/pets?city=Ivoti"
+```
+
+Combinando filtros:
+
+```bash
+curl "https://find-a-friend-api-qgk8.onrender.com/pets?city=Ivoti&type=DOG&size=LARGE"
+```
+
+### Testar as rotas autenticadas
+
+Para cadastrar pets, use a ONG de exemplo (`contato@amigofiel.org` / `123456`) ou crie a sua própria.
+
+**1. (Opcional) Cadastrar uma organização**
 
 ```bash
 curl -X POST https://find-a-friend-api-qgk8.onrender.com/orgs \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "ONG Amigo Fiel",
-    "email": "contato@amigofiel.org",
+    "name": "Minha ONG",
+    "email": "minha-ong@exemplo.com",
     "cep": "93900-000",
     "address": "Rua das Flores, 123",
     "city": "Ivoti",
@@ -29,7 +45,7 @@ curl -X POST https://find-a-friend-api-qgk8.onrender.com/orgs \
   }'
 ```
 
-**2. Autenticar e guardar o token**
+**2. Autenticar e guardar o token** (com a ONG de exemplo; se criou a sua, troque o e-mail)
 
 ```bash
 TOKEN=$(curl -s -X POST https://find-a-friend-api-qgk8.onrender.com/sessions \
@@ -54,12 +70,6 @@ curl -X POST https://find-a-friend-api-qgk8.onrender.com/pets \
   -F "requirements=Ter disponibilidade para passeios" \
   -F "images=@rex-1.jpg;type=image/jpeg" \
   -F "images=@rex-2.jpg;type=image/jpeg"
-```
-
-**4. Buscar pets por cidade e filtros**
-
-```bash
-curl "https://find-a-friend-api-qgk8.onrender.com/pets?city=Ivoti&type=DOG&size=LARGE"
 ```
 
 ## 1. Tecnologias utilizadas
@@ -139,6 +149,12 @@ O arquivo [docker-compose.yml](docker-compose.yml) define um serviço `postgres`
 ```bash
 npx prisma generate
 npx prisma migrate deploy
+```
+
+(Opcional) Popular o banco com uma ONG e pets de exemplo:
+
+```bash
+npm run seed
 ```
 
 ### 3.6. Iniciar o servidor
