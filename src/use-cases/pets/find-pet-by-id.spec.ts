@@ -1,7 +1,6 @@
 import { InMemoryPetsRepository } from "@/repositories/in-memory/in-memory-pets-repository.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { InMemoryOrgsRepository } from "@/repositories/in-memory/in-memory-orgs-repository.js";
-import { ListPetsUseCase } from "./list-pets.js";
 import { makeOrg } from "@/utils/test/make-org.js";
 import { makePet } from "@/utils/test/make-pet.js";
 import { FindPetByIdUseCase } from "./find-pet-by-id.js";
